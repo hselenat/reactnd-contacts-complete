@@ -6,7 +6,6 @@ import * as ContactsAPI from './utils/ContactsAPI'
 
 class App extends Component {
   state = {
-    screen: 'list', // list, create
     contacts : []
   }
   componentDidMount() {
@@ -20,6 +19,15 @@ class App extends Component {
     }))
     ContactsAPI.remove(contact)
   }
+
+  CreateContact(contact) {
+    ContactsAPI.create(contact).then(contact => {
+        this.setState(state => ({
+          contacts:state.contacts.contact([ contact ])
+        }))
+      })
+  }
+
   render() {
     return (
       <div>
@@ -29,7 +37,15 @@ class App extends Component {
           contacts={this.state.contacts} 
         />
         )}/>
-        <Route path='/create' Component={CreateContact}/>
+        <Route path='/create' render={({ history }) => (
+          <CreateContact 
+            onCreateContact={(contact) => {
+              this.CreateContact(contact)
+              history.push('/')
+            }}
+          />
+        )}/>
+        {/* <Route path="/create" component={CreateContact}/> */}
       </div>
     )
   }
